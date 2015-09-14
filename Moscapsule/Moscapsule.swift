@@ -235,7 +235,7 @@ public class MQTTConfig {
     public init(clientId: String, host: String, port: Int32, keepAlive: Int32) {
         // MQTT client ID is restricted to 23 characters in the MQTT v3.1 spec
         self.clientId = { max in
-            (clientId as NSString).length <= max ? clientId : clientId.substringToIndex(advance(clientId.startIndex, max))
+            (clientId as NSString).length <= max ? clientId : clientId.substringToIndex(clientId.startIndex.advanceBy(max))
         }(Int(MOSQ_MQTT_ID_MAX_LENGTH))
         self.host = host
         self.port = port
@@ -246,7 +246,7 @@ public class MQTTConfig {
 }
 
 @objc(__MosquittoContext)
-public final class __MosquittoContext {
+public final class __MosquittoContext: NSObject {
     public var mosquittoHandler: COpaquePointer = nil
     public var isConnected: Bool = false
     public var onConnectCallback: ((returnCode: Int) -> ())!
@@ -256,7 +256,7 @@ public final class __MosquittoContext {
     public var onSubscribeCallback: ((messageId: Int, qosCount: Int, grantedQos: UnsafePointer<Int32>) -> ())!
     public var onUnsubscribeCallback: ((messageId: Int) -> ())!
     public var keyfile_passwd: String = ""
-    internal init(){}
+    internal override init(){}
 }
 
 public final class MQTTMessage {
